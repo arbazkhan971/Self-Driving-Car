@@ -11,7 +11,8 @@ def roi(img):   #region of interest which is triangle here which may be dfferent
     triangle = np.array([[(220,bottom),(1020,bottom),(570,250)]])    #size of traingle with vertices
     mask = np.zeros_like(img)                      #mask which is completely blacked
     cv2.fillPoly(mask , triangle,255)
-    return mask
+    masked_image = cv2.bitwise_and(img,mask)
+    return masked_image
 
 
 
