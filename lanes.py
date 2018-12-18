@@ -52,13 +52,28 @@ def display_lines(img,lines):
     return line_image
 
 
-img = cv2.imread("images/road.jpg")
-gray_img = cv2.imread("images/road.jpg",0)
-canny = edge_detection(img)
-roi = roi(canny)
-lines = cv2.HoughLinesP(roi, 2, np.pi/180, 100, np.array([]), minLineLength=40,maxLineGap=5)
-avg_lines = average_slope_intercept(img , lines)
-line_image = display_lines(img, avg_lines)
-combo_image = cv2.addWeighted(img, 0.8, line_image, 1, 1)
-plt.imshow(combo_image)
-plt.show()
+#img = cv2.imread("images/road.jpg")
+#canny = edge_detection(img)
+#roi = roi(canny)
+#lines = cv2.HoughLinesP(roi, 2, np.pi/180, 100, np.array([]), minLineLength=40,maxLineGap=5)
+#avg_lines = average_slope_intercept(img , lines)
+#line_image = display_lines(img, avg_lines)
+#combo_image = cv2.addWeighted(img, 0.8, line_image, 1, 1)
+#plt.imshow(combo_image)
+#plt.show()
+
+
+cap = cv2.VideoCapture("images/test.mp4")
+while(cap.isOpened()):
+    _, frame = cap.read()
+    canny_image = canny(frame)
+    cropped_canny = region_of_interest(canny_image)
+    lines = cv2.HoughLinesP(cropped_canny, 2, np.pi/180, 100, np.array([]), minLineLength=40,maxLineGap=5)
+    averaged_lines = average_slope_intercept(frame, lines)
+    line_image = display_lines(frame, averaged_lines)
+    combo_image = cv2.addWeighted(frame, 0.8, line_image, 1, 1)
+    cv2.imshow("result", combo_image)
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+cap.release()
+cv2.destroyAllWindows()
